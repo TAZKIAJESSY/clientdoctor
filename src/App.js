@@ -5,12 +5,17 @@ import PatientSignUpPage from "./pages/PatientSignUpPage";
 import HomePage from "./pages/Home/HomePage";
 import DoctorSchedulePage from "./pages/DoctorSchedule/DoctorSchedulePage";
 import NavBar from "./components/NavBar";
+import DetailsPatientPage from "./pages/DetailsPatientPage";
 
 function App() {
   return (
     <div className="App">
       <NavBar />
       <Switch>
+        <Route
+          path="/detailspatient/:patientId"
+          component={DetailsPatientPage}
+        />
         <Route path="/database" component={PatientDatabasePage} />
         <Route path="/signup" component={PatientSignUpPage} />
 
