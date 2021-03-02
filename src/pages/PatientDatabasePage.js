@@ -10,6 +10,12 @@ function compareName(patient_a, patient_b) {
 function PatientDatabasePage() {
   const [doctorData, set_doctorData] = useState("");
   const [patientData, set_patientData] = useState("");
+  const [doctorId, set_doctorId] = useState("all");
+
+  function change_sorting(event) {
+    console.log("New filter sort", event.target.value);
+    set_doctorId(event.target.value);
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -29,25 +35,37 @@ function PatientDatabasePage() {
       );
       console.log("what are patients?", response);
 
-      const patient_sorted = [...response.data].sort(compareName);
-
-      set_patientData(patient_sorted);
+      set_patientData(response.data);
     }
     fetchData();
   }, []);
-  // {
-  //   /* <option key={doc.id} value={doc.id}>
-  //               {doc.doctor}
-  //             </option> */
-  // }
+  const patient_sorted = [...patientData].sort(compareName);
+
+  const sorted_doctor_byid = patient_sorted.filter((Patient) => {
+    if (doctorId === "all") {
+      return Patient;
+    } else {
+      return parseInt(doctorId) === Patient.doctorId;
+    }
+  });
+
   return (
     <div>
       <h1>Patient Database!</h1>
+
       {doctorData ? (
         <div>
-          {doctorData.map((d, index) => {
-            return <DoctorItem key={index} doctor={d.doctor} id={d.id} />;
-          })}
+          <label>Select Doctor's Name: </label>
+          <select onChange={change_sorting}>
+            <option value="all">All</option>
+            {doctorData.map((d, index) => {
+              return (
+                <option key={index} value={d.id}>
+                  doctor={d.doctor}
+                </option>
+              );
+            })}
+          </select>
         </div>
       ) : (
         <p>Loading....</p>
@@ -56,7 +74,7 @@ function PatientDatabasePage() {
       <div>
         {patientData ? (
           <div style={{ marginTop: 200 }}>
-            {patientData.map((p, index) => {
+            {sorted_doctor_byid.map((p, index) => {
               return (
                 <PatientItem
                   key={index}
